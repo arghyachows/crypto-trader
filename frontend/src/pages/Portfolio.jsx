@@ -113,7 +113,7 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-slate-600">Total Invested</CardTitle>
