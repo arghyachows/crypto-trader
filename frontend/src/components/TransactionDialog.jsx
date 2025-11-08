@@ -106,16 +106,16 @@ const TransactionDialog = ({
           </div>
 
           {/* Balance Impact */}
-          <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="font-semibold text-slate-900">Balance Impact</h4>
+          <div className="space-y-2 sm:space-y-3 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 className="font-semibold text-slate-900 text-sm sm:text-base">Balance Impact</h4>
             
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span className="text-slate-600">Current balance</span>
                 <span className="font-medium">${currentBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               
-              <div className="flex justify-between text-base font-semibold">
+              <div className="flex justify-between text-sm sm:text-base font-semibold">
                 <span>Balance after</span>
                 <span className={balanceAfter < 0 ? 'text-red-600' : 'text-slate-900'}>
                   ${balanceAfter.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
