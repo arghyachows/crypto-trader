@@ -176,14 +176,14 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
                 <table className="w-full" data-testid="portfolio-holdings-table">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="pb-3 font-semibold text-slate-700">Asset</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Quantity</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Avg Buy Price</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Current Price</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Total Invested</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Current Value</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Profit/Loss</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Actions</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-sm">Asset</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden sm:table-cell">Quantity</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden lg:table-cell">Avg Buy Price</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden md:table-cell">Current Price</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden lg:table-cell">Total Invested</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden md:table-cell">Current Value</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm">Profit/Loss</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -199,33 +199,34 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
                           className="border-b hover:bg-slate-50"
                           data-testid={`portfolio-row-${item.crypto_id}`}
                         >
-                          <td className="py-4 cursor-pointer" onClick={() => navigate(`/crypto/${item.crypto_id}`)}>
-                            <div className="font-medium text-slate-800">{item.crypto_name}</div>
-                            <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
+                          <td className="py-3 sm:py-4 cursor-pointer" onClick={() => navigate(`/crypto/${item.crypto_id}`)}>
+                            <div className="font-medium text-slate-800 text-sm sm:text-base">{item.crypto_name}</div>
+                            <div className="text-xs sm:text-sm text-slate-600">{item.crypto_symbol}</div>
                           </td>
-                          <td className="py-4 text-right">{item.quantity.toFixed(4)}</td>
-                          <td className="py-4 text-right">${item.average_buy_price.toFixed(2)}</td>
-                          <td className="py-4 text-right">${currentPrice.toFixed(2)}</td>
-                          <td className="py-4 text-right">${item.total_invested.toFixed(2)}</td>
-                          <td className="py-4 text-right font-medium">${currentValue.toFixed(2)}</td>
-                          <td className={`py-4 text-right font-medium ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden sm:table-cell">{item.quantity.toFixed(4)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden lg:table-cell">${item.average_buy_price.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden md:table-cell">${currentPrice.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden lg:table-cell">${item.total_invested.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right font-medium text-sm hidden md:table-cell">${currentValue.toFixed(2)}</td>
+                          <td className={`py-3 sm:py-4 text-right font-medium text-sm ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             <div className="flex items-center justify-end gap-1">
-                              {profit >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                              {profit >= 0 ? '+' : ''}${profit.toFixed(2)}
+                              {profit >= 0 ? <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" /> : <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />}
+                              <span className="text-xs sm:text-sm">{profit >= 0 ? '+' : ''}${profit.toFixed(2)}</span>
                             </div>
                             <div className="text-xs">
                               ({profit >= 0 ? '+' : ''}{profitPercentage.toFixed(2)}%)
                             </div>
                           </td>
-                          <td className="py-4 text-right">
+                          <td className="py-3 sm:py-4 text-right">
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => handleSellClick(item)}
                               data-testid={`sell-button-${item.crypto_id}`}
+                              className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
                             >
-                              <ShoppingCart className="w-4 h-4 mr-1" />
-                              Sell
+                              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                              <span className="hidden sm:inline">Sell</span>
                             </Button>
                           </td>
                         </tr>
