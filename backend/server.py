@@ -481,6 +481,110 @@ async def get_portfolio(current_user: dict = Depends(get_current_user)):
     portfolios = await db.portfolios.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     return portfolios
 
+@api_router.get("/portfolio/summary")
+async def get_portfolio_summary(current_user: dict = Depends(get_current_user)):
+    """Get portfolio summary with current values and performance"""
+    portfolios = await db.portfolios.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
+    
+    if not portfolios:
+        return {
+            "total_value": 0,
+            "total_invested": 0,
+            "total_profit": 0,
+            "profit_percentage": 0,
+            "holdings": [],
+            "top_performers": [],
+            "top_losers": []
+        }
+    
+    # Get current prices for all cryptos
+    crypto_ids = [p["crypto_id"] for p in portfolios]
+    cache_key = "crypto_list"
+    
+    # Try to get from cache first
+    if cache_key in crypto_cache:
+        cryptos = crypto_cache[cache_key]
+    else:
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                params = {
+                    "vs_currency": "usd",
+                    "order": "market_cap_desc",
+                    "per_page": 100,
+                    "page": 1,
+                    "sparkline": "false"
+                }
+                response = await client.get(
+                    "https://api.coingecko.com/api/v3/coins/markets",
+                    params=params
+                )
+                data = response.json()
+                cryptos = [Crypto(
+                    id=item["id"],
+                    symbol=item["symbol"].upper(),
+                    name=item["name"],
+                    image=item["image"],
+                    current_price=item["current_price"],
+                    price_change_24h=item.get("price_change_24h", 0),
+                    price_change_percentage_24h=item.get("price_change_percentage_24h", 0),
+                    market_cap=item["market_cap"],
+                    market_cap_rank=item["market_cap_rank"],
+                    total_volume=item["total_volume"]
+                ) for item in data]
+                crypto_cache[cache_key] = cryptos
+                cache_timestamps[cache_key] = datetime.now(timezone.utc)
+        except Exception as e:
+            logger.error(f"Error fetching crypto prices: {e}")
+            cryptos = []
+    
+    # Create price map
+    price_map = {c.id: c.current_price for c in cryptos}
+    
+    # Calculate holdings with performance
+    holdings = []
+    total_value = 0
+    total_invested = 0
+    
+    for portfolio in portfolios:
+        current_price = price_map.get(portfolio["crypto_id"], 0)
+        current_value = portfolio["quantity"] * current_price
+        profit = current_value - portfolio["total_invested"]
+        profit_percentage = (profit / portfolio["total_invested"] * 100) if portfolio["total_invested"] > 0 else 0
+        
+        holding = {
+            "crypto_id": portfolio["crypto_id"],
+            "crypto_name": portfolio["crypto_name"],
+            "crypto_symbol": portfolio["crypto_symbol"],
+            "quantity": portfolio["quantity"],
+            "average_buy_price": portfolio["average_buy_price"],
+            "current_price": current_price,
+            "total_invested": portfolio["total_invested"],
+            "current_value": current_value,
+            "profit": profit,
+            "profit_percentage": profit_percentage
+        }
+        holdings.append(holding)
+        total_value += current_value
+        total_invested += portfolio["total_invested"]
+    
+    total_profit = total_value - total_invested
+    profit_percentage = (total_profit / total_invested * 100) if total_invested > 0 else 0
+    
+    # Get top performers and losers
+    sorted_holdings = sorted(holdings, key=lambda x: x["profit_percentage"], reverse=True)
+    top_performers = sorted_holdings[:3]
+    top_losers = sorted_holdings[-3:][::-1] if len(sorted_holdings) > 3 else []
+    
+    return {
+        "total_value": total_value,
+        "total_invested": total_invested,
+        "total_profit": total_profit,
+        "profit_percentage": profit_percentage,
+        "holdings": holdings,
+        "top_performers": top_performers,
+        "top_losers": top_losers
+    }
+
 @api_router.get("/transactions")
 async def get_transactions(current_user: dict = Depends(get_current_user)):
     transactions = await db.transactions.find(
