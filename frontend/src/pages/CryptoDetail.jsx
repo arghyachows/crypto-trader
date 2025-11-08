@@ -112,6 +112,7 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
       toast.success("Purchase successful!");
       onUpdateUser({ ...user, balance: response.data.new_balance });
       setBuyQuantity("");
+      setBuyDialogOpen(false);
       fetchPortfolio();
     } catch (error) {
       toast.error(error.response?.data?.detail || "Purchase failed");
@@ -145,6 +146,7 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
       toast.success("Sale successful!");
       onUpdateUser({ ...user, balance: response.data.new_balance });
       setSellQuantity("");
+      setSellDialogOpen(false);
       fetchPortfolio();
     } catch (error) {
       toast.error(error.response?.data?.detail || "Sale failed");
