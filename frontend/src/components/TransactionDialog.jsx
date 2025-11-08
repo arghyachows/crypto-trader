@@ -62,7 +62,7 @@ const TransactionDialog = ({
         <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
           {/* Quantity Input */}
           <div className="space-y-2">
-            <Label htmlFor="quantity" className="text-base font-medium">
+            <Label htmlFor="quantity" className="text-sm sm:text-base font-medium">
               Quantity
             </Label>
             <Input
@@ -73,10 +73,10 @@ const TransactionDialog = ({
               onChange={(e) => onQuantityChange(e.target.value)}
               step="0.0001"
               min="0"
-              className="text-lg"
+              className="text-base sm:text-lg"
               data-testid={`${type}-quantity-input`}
             />
-            <p className="text-sm text-slate-600">
+            <p className="text-xs sm:text-sm text-slate-600">
               {!isBuy && `Available: ${currentHoldings.toFixed(4)} ${crypto?.symbol}`}
             </p>
           </div>
