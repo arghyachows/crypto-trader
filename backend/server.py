@@ -7,13 +7,14 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import List, Optional
+from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt
 import httpx
 from decimal import Decimal
+import asyncio
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -29,6 +30,11 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION = 24  # hours
 
 security = HTTPBearer()
+
+# Cache for CoinGecko API calls
+crypto_cache: Dict[str, dict] = {}
+cache_timestamps: Dict[str, datetime] = {}
+CACHE_DURATION = 60  # seconds
 
 # Create the main app
 app = FastAPI()
