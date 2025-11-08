@@ -298,7 +298,7 @@ async def get_crypto_details(crypto_id: str, days: str = "7"):
         async with httpx.AsyncClient(timeout=30.0) as client:
             # Get current price and basic info
             response = await client.get(
-                f"https://api.coingecko.com/api/v3/coins/markets",
+                "https://api.coingecko.com/api/v3/coins/markets",
                 params={
                     "vs_currency": "usd",
                     "ids": crypto_id
