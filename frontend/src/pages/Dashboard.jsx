@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = ({ user, onLogout, onUpdateUser }) => {
   const [portfolio, setPortfolio] = useState([]);
   const [cryptoPrices, setCryptoPrices] = useState({});
+  const [topPerformers, setTopPerformers] = useState([]);
+  const [topLosers, setTopLosers] = useState([]);
   const [stats, setStats] = useState({
     totalValue: 0,
     totalProfit: 0,
