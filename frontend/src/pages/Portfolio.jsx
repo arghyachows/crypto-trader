@@ -50,7 +50,13 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
 
   const handleSellClick = (item) => {
     const currentPrice = cryptoPrices[item.crypto_id] || 0;
-    setSelectedCrypto({ ...item, current_price: currentPrice });
+    setSelectedCrypto({
+      ...item,
+      current_price: currentPrice,
+      id: item.crypto_id,
+      name: item.crypto_name,
+      symbol: item.crypto_symbol
+    });
     setSellQuantity("");
     setSellDialogOpen(true);
   };
