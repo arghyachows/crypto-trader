@@ -49,17 +49,17 @@ const TransactionDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md" data-testid={`${type}-dialog`}>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto" data-testid={`${type}-dialog`}>
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-xl sm:text-2xl">
             {isBuy ? 'Buy' : 'Sell'} {crypto?.name}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             Review your transaction details before confirming
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 sm:space-y-6 py-2 sm:py-4">
           {/* Quantity Input */}
           <div className="space-y-2">
             <Label htmlFor="quantity" className="text-base font-medium">
