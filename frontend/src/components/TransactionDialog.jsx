@@ -82,21 +82,21 @@ const TransactionDialog = ({
           </div>
 
           {/* Transaction Details */}
-          <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h4 className="font-semibold text-slate-900">Transaction Details</h4>
+          <div className="space-y-2 sm:space-y-3 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <h4 className="font-semibold text-slate-900 text-sm sm:text-base">Transaction Details</h4>
             
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span className="text-slate-600">Price per unit</span>
                 <span className="font-medium">${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span className="text-slate-600">Quantity</span>
                 <span className="font-medium">{qty.toFixed(4)} {crypto?.symbol}</span>
               </div>
               
-              <div className="flex justify-between text-base font-semibold border-t border-slate-300 pt-2 mt-2">
+              <div className="flex justify-between text-sm sm:text-base font-semibold border-t border-slate-300 pt-2 mt-2">
                 <span>{isBuy ? 'Total Cost' : 'Total Proceeds'}</span>
                 <span className={isBuy ? 'text-red-600' : 'text-green-600'} data-testid={`${type}-total-amount`}>
                   {isBuy ? '-' : '+'}${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
