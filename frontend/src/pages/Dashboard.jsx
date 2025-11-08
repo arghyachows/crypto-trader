@@ -236,6 +236,91 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
             )}
           </CardContent>
         </Card>
+
+        {/* Top Performers and Losers */}
+        {portfolio.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Top Performers */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-600">
+                  <TrendingUp className="w-5 h-5" />
+                  Top Performers
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {topPerformers.length > 0 ? (
+                  <div className="space-y-4">
+                    {topPerformers.map((item) => (
+                      <div
+                        key={item.crypto_id}
+                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer transition-colors"
+                        onClick={() => navigate(`/crypto/${item.crypto_id}`)}
+                      >
+                        <div>
+                          <div className="font-semibold text-slate-800">{item.crypto_name}</div>
+                          <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-green-600">
+                            +{item.profitPercentage.toFixed(2)}%
+                          </div>
+                          <div className="text-sm text-slate-600">
+                            +${item.profit.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-slate-600">
+                    No data available
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Top Losers */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-600">
+                  <TrendingDown className="w-5 h-5" />
+                  Biggest Declines
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {topLosers.length > 0 && topLosers[0].profitPercentage < 0 ? (
+                  <div className="space-y-4">
+                    {topLosers.filter(item => item.profitPercentage < 0).map((item) => (
+                      <div
+                        key={item.crypto_id}
+                        className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 cursor-pointer transition-colors"
+                        onClick={() => navigate(`/crypto/${item.crypto_id}`)}
+                      >
+                        <div>
+                          <div className="font-semibold text-slate-800">{item.crypto_name}</div>
+                          <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-red-600">
+                            {item.profitPercentage.toFixed(2)}%
+                          </div>
+                          <div className="text-sm text-slate-600">
+                            ${item.profit.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-slate-600">
+                    All holdings are profitable!
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </Layout>
   );
