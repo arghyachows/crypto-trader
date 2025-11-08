@@ -453,6 +453,15 @@ class CryptoAppTester:
         # Get Bitcoin details for trading tests
         crypto_detail_success, crypto_data = self.test_crypto_details("bitcoin")
 
+        # Portfolio Summary Tests (Empty Portfolio)
+        print("\n📋 PORTFOLIO SUMMARY TESTS")
+        self.test_portfolio_summary_empty()
+        
+        # Chart Timeframe Tests
+        print("\n📋 CHART TIMEFRAME TESTS")
+        if crypto_detail_success:
+            self.test_chart_timeframes("bitcoin")
+        
         # Trading Tests
         print("\n📋 TRADING TESTS")
         if crypto_detail_success:
@@ -461,8 +470,15 @@ class CryptoAppTester:
             if buy_success:
                 portfolio_success, portfolio = self.test_get_portfolio()
                 if portfolio_success:
+                    # Test portfolio summary with holdings
+                    self.test_portfolio_summary_with_holdings()
+                    
+                    # Test selling
                     self.test_sell_crypto(portfolio)
                     self.test_get_transactions()
+                    
+                    # Test portfolio summary after selling
+                    self.test_portfolio_summary_with_holdings()
             else:
                 print("❌ Buy test failed - skipping sell tests")
         else:
