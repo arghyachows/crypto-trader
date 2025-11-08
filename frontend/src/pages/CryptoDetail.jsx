@@ -307,8 +307,8 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Buy */}
           <Card data-testid="buy-card">
-            <CardHeader>
-              <CardTitle>Buy {crypto.symbol.toUpperCase()}</CardTitle>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Buy {crypto.symbol.toUpperCase()}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
               <div className="p-4 sm:p-6 bg-slate-50 rounded-lg space-y-2 sm:space-y-3">
