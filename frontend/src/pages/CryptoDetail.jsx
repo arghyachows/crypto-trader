@@ -32,14 +32,22 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
       setCrypto(response.data.crypto);
       
       // Format chart data
-      const formattedData = response.data.chart.map(([timestamp, price]) => ({
-        time: new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        price: price
-      }));
-      setChartData(formattedData);
+      if (response.data.chart && response.data.chart.length > 0) {
+        const formattedData = response.data.chart.map(([timestamp, price]) => ({
+          time: new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          price: price
+        }));
+        setChartData(formattedData);
+      } else {
+        setChartData([]);
+      }
     } catch (error) {
       console.error("Failed to fetch crypto details", error);
-      toast.error("Failed to load cryptocurrency details");
+      if (error.response?.status === 503) {
+        toast.error("Market data temporarily unavailable. Please try again in a moment.");
+      } else {
+        toast.error("Failed to load cryptocurrency details");
+      }
     } finally {
       setLoading(false);
     }
