@@ -205,7 +205,24 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 # Crypto Routes
 @api_router.get("/cryptos", response_model=List[Crypto])
 async def get_cryptos(search: Optional[str] = None):
+    cache_key = "crypto_list"
+    now = datetime.now(timezone.utc)
+    
+    # Check cache
+    if cache_key in crypto_cache and cache_key in cache_timestamps:
+        age = (now - cache_timestamps[cache_key]).total_seconds()
+        if age < CACHE_DURATION:
+            cryptos = crypto_cache[cache_key]
+            # Filter by search if provided
+            if search:
+                search_lower = search.lower()
+                cryptos = [c for c in cryptos if search_lower in c.name.lower() or search_lower in c.symbol.lower()]
+            return cryptos
+    
     try:
+        # Add delay to respect rate limits
+        await asyncio.sleep(0.5)
+        
         async with httpx.AsyncClient(timeout=30.0) as client:
             params = {
                 "vs_currency": "usd",
@@ -218,6 +235,17 @@ async def get_cryptos(search: Optional[str] = None):
                 "https://api.coingecko.com/api/v3/coins/markets",
                 params=params
             )
+            
+            if response.status_code == 429:
+                logger.warning("CoinGecko rate limit hit, using cached data if available")
+                if cache_key in crypto_cache:
+                    cryptos = crypto_cache[cache_key]
+                    if search:
+                        search_lower = search.lower()
+                        cryptos = [c for c in cryptos if search_lower in c.name.lower() or search_lower in c.symbol.lower()]
+                    return cryptos
+                raise HTTPException(status_code=503, detail="Cryptocurrency data temporarily unavailable. Please try again in a moment.")
+            
             data = response.json()
             
             cryptos = []
@@ -236,12 +264,18 @@ async def get_cryptos(search: Optional[str] = None):
                 )
                 cryptos.append(crypto)
             
+            # Update cache
+            crypto_cache[cache_key] = cryptos
+            cache_timestamps[cache_key] = now
+            
             # Filter by search if provided
             if search:
                 search_lower = search.lower()
                 cryptos = [c for c in cryptos if search_lower in c.name.lower() or search_lower in c.symbol.lower()]
             
             return cryptos
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching cryptos: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch cryptocurrency data")
