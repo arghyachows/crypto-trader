@@ -56,42 +56,42 @@ const Transactions = ({ user, onLogout, onUpdateUser }) => {
                 No transactions yet. Start trading to see your history here.
               </div>
             ) : (
-              <div className="space-y-4" data-testid="transactions-list">
+              <div className="space-y-3 sm:space-y-4" data-testid="transactions-list">
                 {transactions.map((transaction) => (
                   <div
                     key={transaction.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors"
+                    className="flex items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-slate-50 transition-colors"
                     data-testid={`transaction-${transaction.id}`}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                           transaction.transaction_type === 'buy'
                             ? 'bg-green-100 text-green-600'
                             : 'bg-red-100 text-red-600'
                         }`}
                       >
                         {transaction.transaction_type === 'buy' ? (
-                          <ArrowDownRight className="w-5 h-5" />
+                          <ArrowDownRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         ) : (
-                          <ArrowUpRight className="w-5 h-5" />
+                          <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         )}
                       </div>
-                      <div>
-                        <div className="font-medium text-slate-800">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-slate-800 text-sm sm:text-base truncate">
                           {transaction.transaction_type === 'buy' ? 'Bought' : 'Sold'} {transaction.crypto_name}
                         </div>
-                        <div className="text-sm text-slate-600">
+                        <div className="text-xs sm:text-sm text-slate-600">
                           {transaction.quantity.toFixed(4)} {transaction.crypto_symbol} @ ${transaction.price_per_unit.toFixed(2)}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1">
+                        <div className="text-xs text-slate-500 mt-0.5 sm:mt-1">
                           {formatDate(transaction.timestamp)}
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex-shrink-0 ml-2">
                       <div
-                        className={`text-lg font-semibold ${
+                        className={`text-sm sm:text-base md:text-lg font-semibold ${
                           transaction.transaction_type === 'buy' ? 'text-red-600' : 'text-green-600'
                         }`}
                       >
