@@ -101,8 +101,8 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
       <div className="space-y-8" data-testid="dashboard">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">Dashboard</h1>
-          <p className="text-slate-600">Welcome back, {user.name}!</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 mb-2">Dashboard</h1>
+          <p className="text-sm sm:text-base text-slate-600">Welcome back, {user.name}!</p>
         </div>
 
         {/* Stats Cards */}
