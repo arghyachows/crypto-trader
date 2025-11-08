@@ -199,28 +199,28 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
 
         {/* Price Info */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               <div>
-                <div className="text-sm text-slate-600 mb-1">Current Price</div>
-                <div className="text-3xl font-bold text-slate-800" data-testid="current-price">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Current Price</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800" data-testid="current-price">
                   ${crypto.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
               </div>
               <div>
-                <div className="text-sm text-slate-600 mb-1">24h Change</div>
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">24h Change</div>
                 <div
-                  className={`text-2xl font-bold flex items-center gap-2 ${
+                  className={`text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2 ${
                     crypto.price_change_percentage_24h >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}
                 >
-                  {crypto.price_change_percentage_24h >= 0 ? <TrendingUp /> : <TrendingDown />}
+                  {crypto.price_change_percentage_24h >= 0 ? <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" /> : <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6" />}
                   {Math.abs(crypto.price_change_percentage_24h).toFixed(2)}%
                 </div>
               </div>
               <div>
-                <div className="text-sm text-slate-600 mb-1">Market Cap</div>
-                <div className="text-2xl font-bold text-slate-800">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Market Cap</div>
+                <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800">
                   ${(crypto.market_cap / 1e9).toFixed(2)}B
                 </div>
               </div>
