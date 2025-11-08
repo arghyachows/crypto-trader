@@ -189,11 +189,11 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
         </Button>
 
         {/* Crypto Header */}
-        <div className="flex items-center gap-4">
-          <img src={crypto.image} alt={crypto.name} className="w-16 h-16 rounded-full" />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <img src={crypto.image} alt={crypto.name} className="w-12 h-12 sm:w-16 sm:h-16 rounded-full" />
           <div>
-            <h1 className="text-4xl font-bold text-slate-800">{crypto.name}</h1>
-            <p className="text-slate-600">{crypto.symbol.toUpperCase()}</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800">{crypto.name}</h1>
+            <p className="text-sm sm:text-base text-slate-600">{crypto.symbol.toUpperCase()}</p>
           </div>
         </div>
 
