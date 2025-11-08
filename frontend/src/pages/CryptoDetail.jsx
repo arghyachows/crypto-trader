@@ -201,21 +201,27 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
             <CardTitle>7 Day Price Chart</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="time" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Line type="monotone" dataKey="price" stroke="#3b82f6" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
+            {chartData.length === 0 ? (
+              <div className="text-center py-12 text-slate-600">
+                Chart data temporarily unavailable
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="time" stroke="#64748b" />
+                  <YAxis stroke="#64748b" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Line type="monotone" dataKey="price" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 
