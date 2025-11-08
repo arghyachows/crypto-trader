@@ -498,7 +498,6 @@ async def get_portfolio_summary(current_user: dict = Depends(get_current_user)):
         }
     
     # Get current prices for all cryptos
-    crypto_ids = [p["crypto_id"] for p in portfolios]
     cache_key = "crypto_list"
     
     # Try to get from cache first
