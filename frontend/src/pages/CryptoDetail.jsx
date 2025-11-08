@@ -310,19 +310,19 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
             <CardHeader>
               <CardTitle>Buy {crypto.symbol.toUpperCase()}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-6 bg-slate-50 rounded-lg space-y-3">
-                <div className="flex justify-between text-sm">
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="p-4 sm:p-6 bg-slate-50 rounded-lg space-y-2 sm:space-y-3">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-slate-600">Current Price:</span>
-                  <span className="font-medium text-lg">${crypto.current_price.toFixed(2)}</span>
+                  <span className="font-medium text-base sm:text-lg">${crypto.current_price.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-slate-600">Your Balance:</span>
-                  <span className="font-medium">${user.balance.toFixed(2)}</span>
+                  <span className="font-medium text-sm sm:text-base">${user.balance.toFixed(2)}</span>
                 </div>
               </div>
               <Button
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-sm sm:text-base"
                 onClick={() => setBuyDialogOpen(true)}
                 data-testid="buy-button"
               >
