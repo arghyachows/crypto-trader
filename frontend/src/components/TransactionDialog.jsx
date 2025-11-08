@@ -125,27 +125,27 @@ const TransactionDialog = ({
           </div>
 
           {/* Portfolio Impact */}
-          <div className="space-y-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-            <h4 className="font-semibold text-slate-900">Portfolio Impact</h4>
+          <div className="space-y-2 sm:space-y-3 p-3 sm:p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+            <h4 className="font-semibold text-slate-900 text-sm sm:text-base">Portfolio Impact</h4>
             
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex justify-between text-xs sm:text-sm">
                 <span className="text-slate-600">Current holdings</span>
                 <span className="font-medium">{currentHoldings.toFixed(4)} {crypto?.symbol}</span>
               </div>
               
-              <div className="flex justify-between text-base font-semibold">
+              <div className="flex justify-between text-sm sm:text-base font-semibold">
                 <span>Holdings after</span>
                 <span>{holdingsAfter.toFixed(4)} {crypto?.symbol}</span>
               </div>
               
               {!isBuy && qty > 0 && (
                 <div className="border-t border-indigo-300 pt-2 mt-2">
-                  <div className="flex justify-between items-center text-sm">
+                  <div className="flex justify-between items-center text-xs sm:text-sm">
                     <span className="text-slate-600">Profit/Loss on sale</span>
                     <div className="text-right">
                       <div className={`font-semibold flex items-center gap-1 justify-end ${profitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {profitLoss >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                        {profitLoss >= 0 ? <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" /> : <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />}
                         {profitLoss >= 0 ? '+' : ''}${profitLoss.toFixed(2)}
                       </div>
                       <div className={`text-xs ${profitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
