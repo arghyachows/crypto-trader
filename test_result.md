@@ -112,15 +112,18 @@ user_problem_statement: |
 backend:
   - task: "Portfolio summary endpoint with top performers/losers"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added /api/portfolio/summary endpoint that calculates portfolio metrics, holdings performance, and identifies top performers/losers"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Portfolio summary endpoint working perfectly. Tested empty portfolio (returns zeros), portfolio with holdings (correct calculations), top performers/losers sorting, and all required fields present. Calculations verified: total_value, total_invested, total_profit, profit_percentage all accurate."
 
 frontend:
   - task: "Enhanced transaction preview dialogs for buy/sell"
