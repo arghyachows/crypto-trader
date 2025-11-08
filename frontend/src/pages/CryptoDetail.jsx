@@ -304,7 +304,7 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
         </Card>
 
         {/* Trading Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Buy */}
           <Card data-testid="buy-card">
             <CardHeader>
