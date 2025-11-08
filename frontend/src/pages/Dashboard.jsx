@@ -168,8 +168,8 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
 
         {/* Portfolio Holdings */}
         <Card>
-          <CardHeader>
-            <CardTitle>Your Holdings</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-lg sm:text-xl">Your Holdings</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
