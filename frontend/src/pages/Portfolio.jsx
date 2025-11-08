@@ -108,8 +108,8 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
       <div className="space-y-8" data-testid="portfolio-page">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">Portfolio</h1>
-          <p className="text-slate-600">Track your crypto investments</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 mb-2">Portfolio</h1>
+          <p className="text-sm sm:text-base text-slate-600">Track your crypto investments</p>
         </div>
 
         {/* Summary Cards */}
