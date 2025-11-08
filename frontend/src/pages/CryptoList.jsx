@@ -73,12 +73,12 @@ const CryptoList = ({ user, onLogout, onUpdateUser }) => {
                 <table className="w-full" data-testid="crypto-table">
                   <thead>
                     <tr className="border-b bg-slate-50">
-                      <th className="py-4 px-6 text-left font-semibold text-slate-700">#</th>
-                      <th className="py-4 px-6 text-left font-semibold text-slate-700">Name</th>
-                      <th className="py-4 px-6 text-right font-semibold text-slate-700">Price</th>
-                      <th className="py-4 px-6 text-right font-semibold text-slate-700">24h Change</th>
-                      <th className="py-4 px-6 text-right font-semibold text-slate-700">Market Cap</th>
-                      <th className="py-4 px-6 text-right font-semibold text-slate-700">Volume (24h)</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-left font-semibold text-slate-700 text-sm hidden sm:table-cell">#</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-left font-semibold text-slate-700 text-sm">Name</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-right font-semibold text-slate-700 text-sm">Price</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-right font-semibold text-slate-700 text-sm">24h Change</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-right font-semibold text-slate-700 text-sm hidden md:table-cell">Market Cap</th>
+                      <th className="py-3 sm:py-4 px-3 sm:px-6 text-right font-semibold text-slate-700 text-sm hidden lg:table-cell">Volume (24h)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -89,22 +89,22 @@ const CryptoList = ({ user, onLogout, onUpdateUser }) => {
                         onClick={() => navigate(`/crypto/${crypto.id}`)}
                         data-testid={`crypto-row-${crypto.id}`}
                       >
-                        <td className="py-4 px-6 text-slate-600">{crypto.market_cap_rank}</td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-3">
-                            <img src={crypto.image} alt={crypto.name} className="w-8 h-8 rounded-full" />
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-slate-600 text-sm hidden sm:table-cell">{crypto.market_cap_rank}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6">
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <img src={crypto.image} alt={crypto.name} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full" />
                             <div>
-                              <div className="font-medium text-slate-800">{crypto.name}</div>
-                              <div className="text-sm text-slate-600">{crypto.symbol}</div>
+                              <div className="font-medium text-slate-800 text-sm sm:text-base">{crypto.name}</div>
+                              <div className="text-xs sm:text-sm text-slate-600">{crypto.symbol}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-right font-medium text-slate-800">
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-right font-medium text-slate-800 text-sm">
                           ${crypto.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
-                        <td className="py-4 px-6 text-right">
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-right">
                           <div
-                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md font-medium ${
+                            className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-medium text-xs sm:text-sm ${
                               crypto.price_change_percentage_24h >= 0
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-red-100 text-red-700'
@@ -118,10 +118,10 @@ const CryptoList = ({ user, onLogout, onUpdateUser }) => {
                             {Math.abs(crypto.price_change_percentage_24h).toFixed(2)}%
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-right text-slate-600">
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-slate-600 text-sm hidden md:table-cell">
                           ${(crypto.market_cap / 1e9).toFixed(2)}B
                         </td>
-                        <td className="py-4 px-6 text-right text-slate-600">
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-slate-600 text-sm hidden lg:table-cell">
                           ${(crypto.total_volume / 1e9).toFixed(2)}B
                         </td>
                       </tr>
