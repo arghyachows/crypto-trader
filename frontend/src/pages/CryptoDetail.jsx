@@ -230,13 +230,18 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
 
         {/* Chart */}
         <Card>
-          <CardHeader className="space-y-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle>Price Chart</CardTitle>
+          <CardHeader className="space-y-4 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+              <CardTitle className="text-lg sm:text-xl">Price Chart</CardTitle>
               <Tabs value={timePeriod} onValueChange={setTimePeriod} data-testid="chart-time-period-tabs">
-                <TabsList>
+                <TabsList className="grid grid-cols-5 w-full sm:w-auto">
                   {timePeriods.map((period) => (
-                    <TabsTrigger key={period.value} value={period.value} data-testid={`chart-period-${period.value}`}>
+                    <TabsTrigger 
+                      key={period.value} 
+                      value={period.value} 
+                      data-testid={`chart-period-${period.value}`}
+                      className="text-xs sm:text-sm px-2 sm:px-3"
+                    >
                       {period.label}
                     </TabsTrigger>
                   ))}
@@ -244,25 +249,28 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
               </Tabs>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-2 sm:p-6">
             {chartLoading ? (
-              <div className="text-center py-12 text-slate-600">Loading chart data...</div>
+              <div className="text-center py-12 text-slate-600 text-sm sm:text-base">Loading chart data...</div>
             ) : chartData.length === 0 ? (
-              <div className="text-center py-12 text-slate-600">
+              <div className="text-center py-12 text-slate-600 text-sm sm:text-base">
                 Chart data temporarily unavailable
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={350}>
+              <ResponsiveContainer width="100%" height={300} className="sm:h-[350px]">
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis 
                     dataKey="time" 
                     stroke="#64748b" 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
                   />
                   <YAxis 
                     stroke="#64748b" 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     domain={['auto', 'auto']}
                   />
                   <Tooltip
@@ -270,7 +278,8 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
                       backgroundColor: '#fff',
                       border: '1px solid #e2e8f0',
                       borderRadius: '8px',
-                      padding: '8px 12px'
+                      padding: '8px 12px',
+                      fontSize: '12px'
                     }}
                     formatter={(value) => ['$' + value.toFixed(2), 'Price']}
                     labelFormatter={(label, payload) => {
