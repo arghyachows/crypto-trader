@@ -250,22 +250,22 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
               </CardHeader>
               <CardContent>
                 {topPerformers.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {topPerformers.map((item) => (
                       <div
                         key={item.crypto_id}
-                        className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-2.5 sm:p-3 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer transition-colors"
                         onClick={() => navigate(`/crypto/${item.crypto_id}`)}
                       >
-                        <div>
-                          <div className="font-semibold text-slate-800">{item.crypto_name}</div>
-                          <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-slate-800 text-sm sm:text-base truncate">{item.crypto_name}</div>
+                          <div className="text-xs sm:text-sm text-slate-600">{item.crypto_symbol}</div>
                         </div>
-                        <div className="text-right">
-                          <div className="font-bold text-green-600">
+                        <div className="text-right flex-shrink-0 ml-2">
+                          <div className="font-bold text-green-600 text-sm sm:text-base">
                             +{item.profitPercentage.toFixed(2)}%
                           </div>
-                          <div className="text-sm text-slate-600">
+                          <div className="text-xs sm:text-sm text-slate-600">
                             +${item.profit.toFixed(2)}
                           </div>
                         </div>
