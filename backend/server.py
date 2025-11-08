@@ -281,8 +281,8 @@ async def get_cryptos(search: Optional[str] = None):
         raise HTTPException(status_code=500, detail="Failed to fetch cryptocurrency data")
 
 @api_router.get("/cryptos/{crypto_id}")
-async def get_crypto_details(crypto_id: str):
-    cache_key = f"crypto_detail_{crypto_id}"
+async def get_crypto_details(crypto_id: str, days: str = "7"):
+    cache_key = f"crypto_detail_{crypto_id}_{days}"
     now = datetime.now(timezone.utc)
     
     # Check cache
@@ -318,12 +318,12 @@ async def get_crypto_details(crypto_id: str):
             # Add another delay for second API call
             await asyncio.sleep(0.5)
             
-            # Get historical chart data (7 days)
+            # Get historical chart data
             chart_response = await client.get(
                 f"https://api.coingecko.com/api/v3/coins/{crypto_id}/market_chart",
                 params={
                     "vs_currency": "usd",
-                    "days": "7"
+                    "days": days
                 }
             )
             
