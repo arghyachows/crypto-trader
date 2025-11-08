@@ -6,7 +6,7 @@ import time
 
 def test_portfolio_summary():
     """Focused test for portfolio summary endpoint"""
-    base_url = "https://trade-view-enhance.preview.emergentagent.com"
+    base_url = "https://responsive-makeover-8.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 Testing Portfolio Summary Endpoint")

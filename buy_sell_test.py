@@ -5,7 +5,7 @@ import time
 
 def test_buy_sell_flow():
     """Test complete buy/sell flow"""
-    base_url = "https://trade-view-enhance.preview.emergentagent.com"
+    base_url = "https://responsive-makeover-8.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 Testing Buy/Sell Flow")
