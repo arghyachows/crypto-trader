@@ -282,7 +282,19 @@ async def get_cryptos(search: Optional[str] = None):
 
 @api_router.get("/cryptos/{crypto_id}")
 async def get_crypto_details(crypto_id: str):
+    cache_key = f"crypto_detail_{crypto_id}"
+    now = datetime.now(timezone.utc)
+    
+    # Check cache
+    if cache_key in crypto_cache and cache_key in cache_timestamps:
+        age = (now - cache_timestamps[cache_key]).total_seconds()
+        if age < CACHE_DURATION:
+            return crypto_cache[cache_key]
+    
     try:
+        # Add delay to respect rate limits
+        await asyncio.sleep(0.5)
+        
         async with httpx.AsyncClient(timeout=30.0) as client:
             # Get current price and basic info
             response = await client.get(
@@ -292,9 +304,19 @@ async def get_crypto_details(crypto_id: str):
                     "ids": crypto_id
                 }
             )
+            
+            if response.status_code == 429:
+                logger.warning(f"CoinGecko rate limit hit for {crypto_id}, using cached data if available")
+                if cache_key in crypto_cache:
+                    return crypto_cache[cache_key]
+                raise HTTPException(status_code=503, detail="Cryptocurrency data temporarily unavailable. Please try again in a moment.")
+            
             data = response.json()
             if not data:
                 raise HTTPException(status_code=404, detail="Cryptocurrency not found")
+            
+            # Add another delay for second API call
+            await asyncio.sleep(0.5)
             
             # Get historical chart data (7 days)
             chart_response = await client.get(
@@ -304,12 +326,29 @@ async def get_crypto_details(crypto_id: str):
                     "days": "7"
                 }
             )
+            
+            if chart_response.status_code == 429:
+                # If chart fails due to rate limit but we have basic data, return it with empty chart
+                result = {
+                    "crypto": data[0],
+                    "chart": []
+                }
+                crypto_cache[cache_key] = result
+                cache_timestamps[cache_key] = now
+                return result
+            
             chart_data = chart_response.json()
             
-            return {
+            result = {
                 "crypto": data[0],
                 "chart": chart_data.get("prices", [])
             }
+            
+            # Update cache
+            crypto_cache[cache_key] = result
+            cache_timestamps[cache_key] = now
+            
+            return result
     except HTTPException:
         raise
     except Exception as e:
