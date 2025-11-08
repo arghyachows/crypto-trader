@@ -239,7 +239,7 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
 
         {/* Top Performers and Losers */}
         {portfolio.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Top Performers */}
             <Card>
               <CardHeader>
