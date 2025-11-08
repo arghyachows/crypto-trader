@@ -160,32 +160,33 @@ const TransactionDialog = ({
 
           {/* Error Messages */}
           {hasInsufficientBalance && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              <AlertCircle className="w-4 h-4" />
+            <div className="flex items-center gap-2 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>Insufficient balance for this transaction</span>
             </div>
           )}
           
           {hasInsufficientHoldings && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              <AlertCircle className="w-4 h-4" />
+            <div className="flex items-center gap-2 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>Insufficient holdings for this transaction</span>
             </div>
           )}
         </div>
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="gap-2 flex-col sm:flex-row">
           <Button 
             variant="outline" 
             onClick={() => onOpenChange(false)} 
             disabled={processing}
+            className="w-full sm:w-auto text-sm"
           >
             Cancel
           </Button>
           <Button
             onClick={onConfirm}
             disabled={processing || isInvalid}
-            className={isBuy ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-600 hover:bg-red-700'}
+            className={`w-full sm:w-auto text-sm ${isBuy ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-600 hover:bg-red-700'}`}
             data-testid={`${type}-confirm-button`}
           >
             {processing ? "Processing..." : `Confirm ${isBuy ? 'Purchase' : 'Sale'}`}
