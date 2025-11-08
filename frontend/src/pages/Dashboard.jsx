@@ -45,11 +45,24 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
         // Calculate stats
         let totalValue = 0;
         let totalInvested = 0;
+        const holdingsWithPerformance = [];
 
         portfolioData.forEach(item => {
           const currentPrice = pricesMap[item.crypto_id] || 0;
-          totalValue += item.quantity * currentPrice;
+          const itemValue = item.quantity * currentPrice;
+          totalValue += itemValue;
           totalInvested += item.total_invested;
+          
+          const profit = itemValue - item.total_invested;
+          const profitPercentage = item.total_invested > 0 ? (profit / item.total_invested) * 100 : 0;
+          
+          holdingsWithPerformance.push({
+            ...item,
+            current_price: currentPrice,
+            current_value: itemValue,
+            profit,
+            profitPercentage
+          });
         });
 
         const totalProfit = totalValue - totalInvested;
@@ -61,6 +74,11 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
           profitPercentage,
           totalInvested
         });
+
+        // Get top performers and losers
+        const sorted = [...holdingsWithPerformance].sort((a, b) => b.profitPercentage - a.profitPercentage);
+        setTopPerformers(sorted.slice(0, 3));
+        setTopLosers(sorted.slice(-3).reverse());
       } else {
         setStats({
           totalValue: 0,
@@ -68,6 +86,8 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
           profitPercentage: 0,
           totalInvested: 0
         });
+        setTopPerformers([]);
+        setTopLosers([]);
       }
     } catch (error) {
       console.error("Failed to fetch portfolio", error);
