@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,23 +21,43 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
   const [sellQuantity, setSellQuantity] = useState("");
   const [portfolio, setPortfolio] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [timePeriod, setTimePeriod] = useState("7");
+  const [chartLoading, setChartLoading] = useState(false);
 
   useEffect(() => {
     fetchCryptoDetails();
     fetchPortfolio();
-  }, [cryptoId]);
+  }, [cryptoId, timePeriod]);
 
   const fetchCryptoDetails = async () => {
+    if (timePeriod !== "7") {
+      setChartLoading(true);
+    }
+    
     try {
-      const response = await axios.get(`/cryptos/${cryptoId}`);
+      const response = await axios.get(`/cryptos/${cryptoId}?days=${timePeriod}`);
       setCrypto(response.data.crypto);
       
       // Format chart data
       if (response.data.chart && response.data.chart.length > 0) {
-        const formattedData = response.data.chart.map(([timestamp, price]) => ({
-          time: new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          price: price
-        }));
+        const formattedData = response.data.chart.map(([timestamp, price]) => {
+          const date = new Date(timestamp);
+          let timeLabel;
+          
+          if (timePeriod === "1") {
+            timeLabel = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          } else if (timePeriod === "7" || timePeriod === "30") {
+            timeLabel = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          } else {
+            timeLabel = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+          }
+          
+          return {
+            time: timeLabel,
+            price: price,
+            fullDate: date.toLocaleString()
+          };
+        });
         setChartData(formattedData);
       } else {
         setChartData([]);
@@ -50,6 +71,7 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
       }
     } finally {
       setLoading(false);
+      setChartLoading(false);
     }
   };
 
@@ -130,6 +152,14 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
     }
   };
 
+  const timePeriods = [
+    { value: "1", label: "1D" },
+    { value: "7", label: "7D" },
+    { value: "30", label: "30D" },
+    { value: "90", label: "90D" },
+    { value: "365", label: "1Y" },
+  ];
+
   if (loading) {
     return (
       <Layout user={user} onLogout={onLogout}>
@@ -197,28 +227,64 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
 
         {/* Chart */}
         <Card>
-          <CardHeader>
-            <CardTitle>7 Day Price Chart</CardTitle>
+          <CardHeader className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <CardTitle>Price Chart</CardTitle>
+              <Tabs value={timePeriod} onValueChange={setTimePeriod} data-testid="chart-time-period-tabs">
+                <TabsList>
+                  {timePeriods.map((period) => (
+                    <TabsTrigger key={period.value} value={period.value} data-testid={`chart-period-${period.value}`}>
+                      {period.label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
           </CardHeader>
           <CardContent>
-            {chartData.length === 0 ? (
+            {chartLoading ? (
+              <div className="text-center py-12 text-slate-600">Loading chart data...</div>
+            ) : chartData.length === 0 ? (
               <div className="text-center py-12 text-slate-600">
                 Chart data temporarily unavailable
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={350}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="time" stroke="#64748b" />
-                  <YAxis stroke="#64748b" />
+                  <XAxis 
+                    dataKey="time" 
+                    stroke="#64748b" 
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    stroke="#64748b" 
+                    tick={{ fontSize: 12 }}
+                    domain={['auto', 'auto']}
+                  />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#fff',
                       border: '1px solid #e2e8f0',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      padding: '8px 12px'
+                    }}
+                    formatter={(value) => ['$' + value.toFixed(2), 'Price']}
+                    labelFormatter={(label, payload) => {
+                      if (payload && payload[0] && payload[0].payload.fullDate) {
+                        return payload[0].payload.fullDate;
+                      }
+                      return label;
                     }}
                   />
-                  <Line type="monotone" dataKey="price" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="price" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2} 
+                    dot={false}
+                    animationDuration={300}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             )}

@@ -11,13 +11,17 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
   const [stats, setStats] = useState({
     totalValue: 0,
     totalProfit: 0,
-    profitPercentage: 0
+    profitPercentage: 0,
+    totalInvested: 0
   });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchPortfolio();
+    // Refresh prices every 30 seconds
+    const interval = setInterval(fetchPortfolio, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchPortfolio = async () => {
@@ -27,9 +31,8 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
       setPortfolio(portfolioData);
 
       if (portfolioData.length > 0) {
-        // Fetch current prices for portfolio items
-        const cryptoIds = portfolioData.map(p => p.crypto_id).join(",");
-        const pricesResponse = await axios.get(`/cryptos?search=${cryptoIds}`);
+        // Fetch current prices for all cryptos
+        const pricesResponse = await axios.get(`/cryptos`);
         
         const pricesMap = {};
         pricesResponse.data.forEach(crypto => {
@@ -53,7 +56,15 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
         setStats({
           totalValue,
           totalProfit,
-          profitPercentage
+          profitPercentage,
+          totalInvested
+        });
+      } else {
+        setStats({
+          totalValue: 0,
+          totalProfit: 0,
+          profitPercentage: 0,
+          totalInvested: 0
         });
       }
     } catch (error) {
@@ -161,7 +172,8 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
                       <th className="pb-3 font-semibold text-slate-700 text-right">Quantity</th>
                       <th className="pb-3 font-semibold text-slate-700 text-right">Avg Buy Price</th>
                       <th className="pb-3 font-semibold text-slate-700 text-right">Current Price</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Total Value</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right">Total Invested</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right">Current Value</th>
                       <th className="pb-3 font-semibold text-slate-700 text-right">Profit/Loss</th>
                     </tr>
                   </thead>
@@ -170,7 +182,7 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
                       const currentPrice = cryptoPrices[item.crypto_id] || 0;
                       const totalValue = item.quantity * currentPrice;
                       const profit = totalValue - item.total_invested;
-                      const profitPercentage = (profit / item.total_invested) * 100;
+                      const profitPercentage = item.total_invested > 0 ? (profit / item.total_invested) * 100 : 0;
 
                       return (
                         <tr
@@ -185,6 +197,7 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
                           <td className="py-4 text-right">{item.quantity.toFixed(4)}</td>
                           <td className="py-4 text-right">${item.average_buy_price.toFixed(2)}</td>
                           <td className="py-4 text-right">${currentPrice.toFixed(2)}</td>
+                          <td className="py-4 text-right">${item.total_invested.toFixed(2)}</td>
                           <td className="py-4 text-right font-medium">${totalValue.toFixed(2)}</td>
                           <td className={`py-4 text-right font-medium ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {profit >= 0 ? '+' : ''}${profit.toFixed(2)}

@@ -1,18 +1,30 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
+import { Wallet, TrendingUp, TrendingDown, ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 const Portfolio = ({ user, onLogout, onUpdateUser }) => {
   const [portfolio, setPortfolio] = useState([]);
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [loading, setLoading] = useState(true);
+  const [sellDialogOpen, setSellDialogOpen] = useState(false);
+  const [selectedCrypto, setSelectedCrypto] = useState(null);
+  const [sellQuantity, setSellQuantity] = useState("");
+  const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchPortfolio();
+    // Refresh prices every 30 seconds
+    const interval = setInterval(fetchPortfolio, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchPortfolio = async () => {
@@ -23,7 +35,6 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
 
       if (portfolioData.length > 0) {
         // Fetch current prices
-        const cryptoIds = portfolioData.map(p => p.crypto_id).join(",");
         const pricesResponse = await axios.get(`/cryptos`);
         
         const pricesMap = {};
@@ -36,6 +47,47 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
       console.error("Failed to fetch portfolio", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSellClick = (item) => {
+    const currentPrice = cryptoPrices[item.crypto_id] || 0;
+    setSelectedCrypto({ ...item, current_price: currentPrice });
+    setSellQuantity("");
+    setSellDialogOpen(true);
+  };
+
+  const handleSell = async () => {
+    const quantity = parseFloat(sellQuantity);
+    if (!quantity || quantity <= 0) {
+      toast.error("Please enter a valid quantity");
+      return;
+    }
+
+    if (quantity > selectedCrypto.quantity) {
+      toast.error("Insufficient crypto balance");
+      return;
+    }
+
+    setProcessing(true);
+    try {
+      const response = await axios.post("/portfolio/sell", {
+        crypto_id: selectedCrypto.crypto_id,
+        crypto_symbol: selectedCrypto.crypto_symbol,
+        crypto_name: selectedCrypto.crypto_name,
+        quantity: quantity,
+        price_per_unit: selectedCrypto.current_price
+      });
+
+      toast.success("Sale successful!");
+      onUpdateUser({ ...user, balance: response.data.new_balance });
+      setSellDialogOpen(false);
+      setSellQuantity("");
+      fetchPortfolio();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Sale failed");
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -127,6 +179,7 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
                       <th className="pb-3 font-semibold text-slate-700 text-right">Total Invested</th>
                       <th className="pb-3 font-semibold text-slate-700 text-right">Current Value</th>
                       <th className="pb-3 font-semibold text-slate-700 text-right">Profit/Loss</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -139,11 +192,10 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
                       return (
                         <tr
                           key={item.crypto_id}
-                          className="border-b hover:bg-slate-50 cursor-pointer"
-                          onClick={() => navigate(`/crypto/${item.crypto_id}`)}
+                          className="border-b hover:bg-slate-50"
                           data-testid={`portfolio-row-${item.crypto_id}`}
                         >
-                          <td className="py-4">
+                          <td className="py-4 cursor-pointer" onClick={() => navigate(`/crypto/${item.crypto_id}`)}>
                             <div className="font-medium text-slate-800">{item.crypto_name}</div>
                             <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
                           </td>
@@ -161,6 +213,17 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
                               ({profit >= 0 ? '+' : ''}{profitPercentage.toFixed(2)}%)
                             </div>
                           </td>
+                          <td className="py-4 text-right">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleSellClick(item)}
+                              data-testid={`sell-button-${item.crypto_id}`}
+                            >
+                              <ShoppingCart className="w-4 h-4 mr-1" />
+                              Sell
+                            </Button>
+                          </td>
                         </tr>
                       );
                     })}
@@ -171,6 +234,61 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Sell Dialog */}
+      <Dialog open={sellDialogOpen} onOpenChange={setSellDialogOpen}>
+        <DialogContent data-testid="sell-dialog">
+          <DialogHeader>
+            <DialogTitle>Sell {selectedCrypto?.crypto_name}</DialogTitle>
+            <DialogDescription>
+              Current Price: ${selectedCrypto?.current_price?.toFixed(2)}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Quantity</Label>
+              <Input
+                type="number"
+                placeholder="0.00"
+                value={sellQuantity}
+                onChange={(e) => setSellQuantity(e.target.value)}
+                max={selectedCrypto?.quantity}
+                data-testid="sell-quantity-dialog-input"
+              />
+              <p className="text-sm text-slate-600">
+                Available: {selectedCrypto?.quantity?.toFixed(4)} {selectedCrypto?.crypto_symbol}
+              </p>
+            </div>
+            
+            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-600">Price per unit:</span>
+                <span className="font-medium">${selectedCrypto?.current_price?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-600">Total value:</span>
+                <span className="font-medium" data-testid="sell-total-dialog-value">
+                  ${sellQuantity ? (parseFloat(sellQuantity) * selectedCrypto?.current_price).toFixed(2) : '0.00'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSellDialogOpen(false)} disabled={processing}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSell}
+              disabled={processing || !sellQuantity}
+              data-testid="sell-confirm-button"
+            >
+              {processing ? "Processing..." : "Sell"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
