@@ -289,6 +289,108 @@ class CryptoAppTester:
             return True
         return False
 
+    def test_portfolio_summary_empty(self):
+        """Test portfolio summary with empty portfolio"""
+        success, response = self.run_test(
+            "Portfolio Summary (Empty)",
+            "GET",
+            "portfolio/summary",
+            200
+        )
+        
+        if success:
+            expected_fields = ['total_value', 'total_invested', 'total_profit', 'profit_percentage', 'holdings', 'top_performers', 'top_losers']
+            missing_fields = [field for field in expected_fields if field not in response]
+            
+            if missing_fields:
+                self.log_test("Portfolio Summary (Empty)", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Check empty portfolio values
+            if (response['total_value'] == 0 and response['total_invested'] == 0 and 
+                response['total_profit'] == 0 and response['profit_percentage'] == 0 and
+                len(response['holdings']) == 0 and len(response['top_performers']) == 0 and
+                len(response['top_losers']) == 0):
+                print(f"   Empty portfolio correctly returned zeros")
+                return True
+            else:
+                self.log_test("Portfolio Summary (Empty)", False, "Empty portfolio should have all zero values")
+                return False
+        return False
+
+    def test_portfolio_summary_with_holdings(self):
+        """Test portfolio summary with holdings"""
+        success, response = self.run_test(
+            "Portfolio Summary (With Holdings)",
+            "GET",
+            "portfolio/summary",
+            200
+        )
+        
+        if success:
+            expected_fields = ['total_value', 'total_invested', 'total_profit', 'profit_percentage', 'holdings', 'top_performers', 'top_losers']
+            missing_fields = [field for field in expected_fields if field not in response]
+            
+            if missing_fields:
+                self.log_test("Portfolio Summary (With Holdings)", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            print(f"   Total Value: ${response.get('total_value', 0):.2f}")
+            print(f"   Total Invested: ${response.get('total_invested', 0):.2f}")
+            print(f"   Total Profit: ${response.get('total_profit', 0):.2f}")
+            print(f"   Profit Percentage: {response.get('profit_percentage', 0):.2f}%")
+            print(f"   Holdings: {len(response.get('holdings', []))}")
+            print(f"   Top Performers: {len(response.get('top_performers', []))}")
+            print(f"   Top Losers: {len(response.get('top_losers', []))}")
+            
+            # Validate holdings structure
+            holdings = response.get('holdings', [])
+            if holdings:
+                holding = holdings[0]
+                required_holding_fields = ['crypto_id', 'crypto_name', 'crypto_symbol', 'quantity', 
+                                         'average_buy_price', 'current_price', 'total_invested', 
+                                         'current_value', 'profit', 'profit_percentage']
+                missing_holding_fields = [field for field in required_holding_fields if field not in holding]
+                
+                if missing_holding_fields:
+                    self.log_test("Portfolio Summary (With Holdings)", False, f"Missing holding fields: {missing_holding_fields}")
+                    return False
+                
+                print(f"   First holding: {holding.get('crypto_name')} - Profit: {holding.get('profit_percentage', 0):.2f}%")
+            
+            # Validate top performers/losers are sorted correctly
+            top_performers = response.get('top_performers', [])
+            if len(top_performers) > 1:
+                for i in range(len(top_performers) - 1):
+                    if top_performers[i]['profit_percentage'] < top_performers[i + 1]['profit_percentage']:
+                        self.log_test("Portfolio Summary (With Holdings)", False, "Top performers not sorted correctly")
+                        return False
+            
+            return True
+        return False
+
+    def test_chart_timeframes(self, crypto_id="bitcoin"):
+        """Test chart endpoint with different timeframes"""
+        timeframes = ["1", "7", "30", "365"]
+        all_success = True
+        
+        for days in timeframes:
+            success, response = self.run_test(
+                f"Chart Data ({days} days)",
+                "GET",
+                f"cryptos/{crypto_id}?days={days}",
+                200
+            )
+            
+            if success and 'crypto' in response and 'chart' in response:
+                crypto_data = response['crypto']
+                chart_data = response['chart']
+                print(f"   {days} days - Crypto: {crypto_data.get('name')}, Chart points: {len(chart_data)}")
+            else:
+                all_success = False
+                
+        return all_success
+
     def test_invalid_login(self):
         """Test login with invalid credentials"""
         invalid_login = {
