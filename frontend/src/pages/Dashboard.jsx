@@ -190,13 +190,13 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
                 <table className="w-full" data-testid="portfolio-table">
                   <thead>
                     <tr className="border-b text-left">
-                      <th className="pb-3 font-semibold text-slate-700">Asset</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Quantity</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Avg Buy Price</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Current Price</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Total Invested</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Current Value</th>
-                      <th className="pb-3 font-semibold text-slate-700 text-right">Profit/Loss</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-sm">Asset</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden sm:table-cell">Quantity</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden md:table-cell">Avg Buy Price</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm">Current Price</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden lg:table-cell">Total Invested</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm hidden md:table-cell">Current Value</th>
+                      <th className="pb-3 font-semibold text-slate-700 text-right text-sm">Profit/Loss</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -212,16 +212,16 @@ const Dashboard = ({ user, onLogout, onUpdateUser }) => {
                           className="border-b hover:bg-slate-50 cursor-pointer"
                           onClick={() => navigate(`/crypto/${item.crypto_id}`)}
                         >
-                          <td className="py-4">
-                            <div className="font-medium text-slate-800">{item.crypto_name}</div>
-                            <div className="text-sm text-slate-600">{item.crypto_symbol}</div>
+                          <td className="py-3 sm:py-4">
+                            <div className="font-medium text-slate-800 text-sm sm:text-base">{item.crypto_name}</div>
+                            <div className="text-xs sm:text-sm text-slate-600">{item.crypto_symbol}</div>
                           </td>
-                          <td className="py-4 text-right">{item.quantity.toFixed(4)}</td>
-                          <td className="py-4 text-right">${item.average_buy_price.toFixed(2)}</td>
-                          <td className="py-4 text-right">${currentPrice.toFixed(2)}</td>
-                          <td className="py-4 text-right">${item.total_invested.toFixed(2)}</td>
-                          <td className="py-4 text-right font-medium">${totalValue.toFixed(2)}</td>
-                          <td className={`py-4 text-right font-medium ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden sm:table-cell">{item.quantity.toFixed(4)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden md:table-cell">${item.average_buy_price.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm sm:text-base">${currentPrice.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right text-sm hidden lg:table-cell">${item.total_invested.toFixed(2)}</td>
+                          <td className="py-3 sm:py-4 text-right font-medium text-sm hidden md:table-cell">${totalValue.toFixed(2)}</td>
+                          <td className={`py-3 sm:py-4 text-right font-medium text-sm ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {profit >= 0 ? '+' : ''}${profit.toFixed(2)}
                             <div className="text-xs">
                               ({profit >= 0 ? '+' : ''}{profitPercentage.toFixed(2)}%)
