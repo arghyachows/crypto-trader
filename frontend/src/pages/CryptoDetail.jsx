@@ -22,6 +22,8 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
   const [processing, setProcessing] = useState(false);
   const [timePeriod, setTimePeriod] = useState("7");
   const [chartLoading, setChartLoading] = useState(false);
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [sellDialogOpen, setSellDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchCryptoDetails();
