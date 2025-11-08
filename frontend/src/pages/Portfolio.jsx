@@ -240,59 +240,18 @@ const Portfolio = ({ user, onLogout, onUpdateUser }) => {
       </div>
 
       {/* Sell Dialog */}
-      <Dialog open={sellDialogOpen} onOpenChange={setSellDialogOpen}>
-        <DialogContent data-testid="sell-dialog">
-          <DialogHeader>
-            <DialogTitle>Sell {selectedCrypto?.crypto_name}</DialogTitle>
-            <DialogDescription>
-              Current Price: ${selectedCrypto?.current_price?.toFixed(2)}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Quantity</Label>
-              <Input
-                type="number"
-                placeholder="0.00"
-                value={sellQuantity}
-                onChange={(e) => setSellQuantity(e.target.value)}
-                max={selectedCrypto?.quantity}
-                data-testid="sell-quantity-dialog-input"
-              />
-              <p className="text-sm text-slate-600">
-                Available: {selectedCrypto?.quantity?.toFixed(4)} {selectedCrypto?.crypto_symbol}
-              </p>
-            </div>
-            
-            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Price per unit:</span>
-                <span className="font-medium">${selectedCrypto?.current_price?.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-600">Total value:</span>
-                <span className="font-medium" data-testid="sell-total-dialog-value">
-                  ${sellQuantity ? (parseFloat(sellQuantity) * selectedCrypto?.current_price).toFixed(2) : '0.00'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSellDialogOpen(false)} disabled={processing}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSell}
-              disabled={processing || !sellQuantity}
-              data-testid="sell-confirm-button"
-            >
-              {processing ? "Processing..." : "Sell"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TransactionDialog
+        open={sellDialogOpen}
+        onOpenChange={setSellDialogOpen}
+        type="sell"
+        crypto={selectedCrypto}
+        quantity={sellQuantity}
+        onQuantityChange={setSellQuantity}
+        onConfirm={handleSell}
+        processing={processing}
+        user={user}
+        portfolio={selectedCrypto}
+      />
     </Layout>
   );
 };
