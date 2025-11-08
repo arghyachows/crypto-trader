@@ -302,39 +302,22 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
               <CardTitle>Buy {crypto.symbol.toUpperCase()}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Quantity</Label>
-                <Input
-                  type="number"
-                  placeholder="0.00"
-                  value={buyQuantity}
-                  onChange={(e) => setBuyQuantity(e.target.value)}
-                  data-testid="buy-quantity-input"
-                />
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg space-y-2">
+              <div className="p-6 bg-slate-50 rounded-lg space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Price per unit:</span>
-                  <span className="font-medium">${crypto.current_price.toFixed(2)}</span>
+                  <span className="text-slate-600">Current Price:</span>
+                  <span className="font-medium text-lg">${crypto.current_price.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Total cost:</span>
-                  <span className="font-medium" data-testid="buy-total-cost">
-                    ${buyQuantity ? (parseFloat(buyQuantity) * crypto.current_price).toFixed(2) : '0.00'}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Your balance:</span>
+                  <span className="text-slate-600">Your Balance:</span>
                   <span className="font-medium">${user.balance.toFixed(2)}</span>
                 </div>
               </div>
               <Button
-                className="w-full"
-                onClick={handleBuy}
-                disabled={processing || !buyQuantity}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={() => setBuyDialogOpen(true)}
                 data-testid="buy-button"
               >
-                {processing ? "Processing..." : "Buy"}
+                Buy {crypto.symbol.toUpperCase()}
               </Button>
             </CardContent>
           </Card>
@@ -345,46 +328,57 @@ const CryptoDetail = ({ user, onLogout, onUpdateUser }) => {
               <CardTitle>Sell {crypto.symbol.toUpperCase()}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Quantity</Label>
-                <Input
-                  type="number"
-                  placeholder="0.00"
-                  value={sellQuantity}
-                  onChange={(e) => setSellQuantity(e.target.value)}
-                  data-testid="sell-quantity-input"
-                />
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg space-y-2">
+              <div className="p-6 bg-slate-50 rounded-lg space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Price per unit:</span>
-                  <span className="font-medium">${crypto.current_price.toFixed(2)}</span>
+                  <span className="text-slate-600">Current Price:</span>
+                  <span className="font-medium text-lg">${crypto.current_price.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Total value:</span>
-                  <span className="font-medium" data-testid="sell-total-value">
-                    ${sellQuantity ? (parseFloat(sellQuantity) * crypto.current_price).toFixed(2) : '0.00'}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Your holdings:</span>
+                  <span className="text-slate-600">Your Holdings:</span>
                   <span className="font-medium">
-                    {portfolio ? portfolio.quantity.toFixed(4) : '0.0000'}
+                    {portfolio ? portfolio.quantity.toFixed(4) : '0.0000'} {crypto.symbol.toUpperCase()}
                   </span>
                 </div>
               </div>
               <Button
-                className="w-full"
-                onClick={handleSell}
-                disabled={processing || !sellQuantity || !portfolio}
+                className="w-full bg-red-600 hover:bg-red-700"
+                onClick={() => setSellDialogOpen(true)}
+                disabled={!portfolio}
                 data-testid="sell-button"
               >
-                {processing ? "Processing..." : "Sell"}
+                Sell {crypto.symbol.toUpperCase()}
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Transaction Dialogs */}
+      <TransactionDialog
+        open={buyDialogOpen}
+        onOpenChange={setBuyDialogOpen}
+        type="buy"
+        crypto={crypto}
+        quantity={buyQuantity}
+        onQuantityChange={setBuyQuantity}
+        onConfirm={handleBuy}
+        processing={processing}
+        user={user}
+        portfolio={portfolio}
+      />
+
+      <TransactionDialog
+        open={sellDialogOpen}
+        onOpenChange={setSellDialogOpen}
+        type="sell"
+        crypto={crypto}
+        quantity={sellQuantity}
+        onQuantityChange={setSellQuantity}
+        onConfirm={handleSell}
+        processing={processing}
+        user={user}
+        portfolio={portfolio}
+      />
     </Layout>
   );
 };
