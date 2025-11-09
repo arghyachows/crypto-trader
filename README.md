@@ -377,30 +377,41 @@ All containers communicate through a Docker bridge network (`crypto-network`).
 ```
 /app/
 ├── backend/
-│   ├── server.py          # FastAPI application with all routes
-│   ├── requirements.txt   # Python dependencies
-│   └── .env              # Backend environment variables
+│   ├── server.py           # FastAPI application with all routes
+│   ├── requirements.txt    # Python dependencies
+│   ├── Dockerfile          # Docker image for development
+│   ├── Dockerfile.prod     # Docker image for production
+│   ├── .dockerignore       # Files to exclude from Docker build
+│   └── .env               # Backend environment variables
 ├── frontend/
 │   ├── src/
-│   │   ├── components/   # Reusable React components
+│   │   ├── components/    # Reusable React components
 │   │   │   ├── Layout.jsx
 │   │   │   ├── TransactionDialog.jsx
-│   │   │   └── ui/       # Radix UI components
-│   │   ├── pages/        # Page components
+│   │   │   └── ui/        # Radix UI components
+│   │   ├── pages/         # Page components
 │   │   │   ├── AuthPage.jsx
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── CryptoList.jsx
 │   │   │   ├── CryptoDetail.jsx
 │   │   │   ├── Portfolio.jsx
 │   │   │   └── Transactions.jsx
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── lib/          # Utility functions
-│   │   ├── App.js        # Main app component with routing
-│   │   └── index.js      # Application entry point
-│   ├── package.json      # Node dependencies
-│   └── .env             # Frontend environment variables
-├── tests/               # Test files
-└── README.md           # This file
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # Utility functions
+│   │   ├── App.js         # Main app component with routing
+│   │   └── index.js       # Application entry point
+│   ├── package.json       # Node dependencies
+│   ├── Dockerfile         # Docker image for development
+│   ├── Dockerfile.prod    # Docker image for production
+│   ├── nginx.conf         # Nginx config for production
+│   ├── .dockerignore      # Files to exclude from Docker build
+│   └── .env              # Frontend environment variables
+├── docker-compose.yml      # Docker Compose for development
+├── docker-compose.prod.yml # Docker Compose for production
+├── .dockerignore          # Root Docker ignore file
+├── .env.docker.example    # Example environment variables
+├── tests/                 # Test files
+└── README.md             # This file
 ```
 
 ## 🔒 Security Features
