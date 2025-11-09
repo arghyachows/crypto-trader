@@ -80,6 +80,8 @@ docker-compose up -d
 # Access: http://localhost:3000
 ```
 
+> 📘 **Detailed Docker Documentation**: See [DOCKER.md](./DOCKER.md) for comprehensive Docker setup, troubleshooting, and best practices.
+
 ### Using Local Development
 ```bash
 # 1. Start MongoDB
