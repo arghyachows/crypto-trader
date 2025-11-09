@@ -184,6 +184,40 @@ docker-compose down -v
 
 #### Docker Commands Reference
 
+##### Using Makefile (Recommended)
+```bash
+# Show all available commands
+make help
+
+# Start development environment
+make up
+
+# Build and start
+make up-build
+
+# Stop services
+make down
+
+# Restart services
+make restart
+
+# View logs
+make logs
+make logs-backend
+make logs-frontend
+
+# Open shell in container
+make shell-backend
+make shell-frontend
+
+# Check status
+make status
+
+# Clean everything
+make clean
+```
+
+##### Using Docker Compose Directly
 ```bash
 # Start services in detached mode
 docker-compose up -d
