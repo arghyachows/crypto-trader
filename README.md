@@ -312,11 +312,45 @@ tail -f /var/log/supervisor/backend.*.log
 tail -f /var/log/supervisor/frontend.*.log
 ```
 
-## 🌐 Accessing the Application
+## 🌐 Application Access
 
-- **Frontend**: The frontend runs on port 3000 (configured in Supervisor)
-- **Backend API**: The backend runs on port 8001 (configured in Supervisor)
+### Docker Setup
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8001
+- **API Documentation**: http://localhost:8001/docs
+- **MongoDB**: localhost:27017
 - **API Base URL**: All backend routes are prefixed with `/api`
+
+### Local/Supervisor Setup
+- **Frontend**: Port 3000
+- **Backend API**: Port 8001
+- **API Base URL**: All backend routes are prefixed with `/api`
+
+## 🐳 Docker Architecture
+
+The application consists of three Docker containers:
+
+1. **MongoDB Container** (`crypto-mongodb`)
+   - Image: mongo:7.0
+   - Port: 27017
+   - Volume: Persistent data storage
+   - Network: crypto-network
+
+2. **Backend Container** (`crypto-backend`)
+   - Built from: backend/Dockerfile
+   - Port: 8001
+   - Environment: Python 3.11, FastAPI
+   - Features: Hot reload enabled for development
+   - Depends on: MongoDB
+
+3. **Frontend Container** (`crypto-frontend`)
+   - Built from: frontend/Dockerfile
+   - Port: 3000
+   - Environment: Node 18, React
+   - Features: Hot reload enabled for development
+   - Depends on: Backend
+
+All containers communicate through a Docker bridge network (`crypto-network`).
 
 ### API Endpoints
 
