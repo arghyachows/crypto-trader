@@ -91,6 +91,11 @@ A full-stack cryptocurrency trading platform built with React, FastAPI, and Mong
 
 ## 📋 Prerequisites
 
+### Option 1: Docker (Recommended)
+- Docker Desktop or Docker Engine (20.10+)
+- Docker Compose (v2.0+)
+
+### Option 2: Local Development
 - Node.js (v16 or higher)
 - Python 3.9+
 - MongoDB (local or MongoDB Atlas)
@@ -98,7 +103,114 @@ A full-stack cryptocurrency trading platform built with React, FastAPI, and Mong
 
 ## ⚙️ Installation & Setup
 
-### 1. Clone the Repository
+### 🐳 Option 1: Docker Setup (Recommended)
+
+Docker provides the easiest way to run the entire application with all dependencies.
+
+#### Quick Start with Docker
+
+1. **Clone the Repository**
+```bash
+git clone <repository-url>
+cd /app
+```
+
+2. **Start All Services**
+```bash
+docker-compose up -d
+```
+
+This single command will:
+- Start MongoDB container
+- Build and start the backend API
+- Build and start the frontend application
+- Set up networking between all services
+
+3. **Access the Application**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8001
+- API Documentation: http://localhost:8001/docs
+- MongoDB: localhost:27017
+
+4. **View Logs**
+```bash
+# All services
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f mongodb
+```
+
+5. **Stop Services**
+```bash
+docker-compose down
+
+# Stop and remove volumes (clears database)
+docker-compose down -v
+```
+
+#### Docker Commands Reference
+
+```bash
+# Start services in detached mode
+docker-compose up -d
+
+# Start services with build
+docker-compose up -d --build
+
+# Stop services
+docker-compose stop
+
+# Restart a specific service
+docker-compose restart backend
+
+# View running containers
+docker-compose ps
+
+# Execute commands in container
+docker-compose exec backend bash
+docker-compose exec frontend sh
+
+# View service logs
+docker-compose logs -f [service-name]
+
+# Remove all containers and volumes
+docker-compose down -v
+```
+
+#### Production Docker Setup
+
+For production deployment with optimized builds:
+
+```bash
+# Build and start production containers
+docker-compose -f docker-compose.prod.yml up -d --build
+
+# Frontend will be served by Nginx on port 80
+# Backend runs without hot-reload for better performance
+```
+
+#### Environment Variables for Docker
+
+The `docker-compose.yml` file includes all necessary environment variables. To customize:
+
+1. Create `.env` file in the root directory:
+```env
+JWT_SECRET=your-production-secret-key
+CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
+```
+
+2. Docker Compose will automatically use these variables.
+
+---
+
+### 💻 Option 2: Local Development Setup
+
+For development without Docker:
+
+#### 1. Clone the Repository
 ```bash
 git clone <repository-url>
 cd /app
