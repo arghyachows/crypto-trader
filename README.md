@@ -2,7 +2,8 @@
 
 A full-stack cryptocurrency trading platform built with React, FastAPI, and MongoDB. Users can buy and sell cryptocurrencies, track their portfolio performance, view detailed charts, and monitor their transaction history.
 
-> 🚀 **New to the project?** Check out [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide!
+> 🚀 **New to the project?** Check out [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide!  
+> 💻 **Setting up locally?** See [SETUP_LOCAL.md](./SETUP_LOCAL.md) for detailed local setup instructions!
 
 ## 🚀 Features
 
