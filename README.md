@@ -67,6 +67,37 @@ A full-stack cryptocurrency trading platform built with React, FastAPI, and Mong
 - Quick access to portfolio value and profit/loss
 - Visual indicators for gains and losses
 
+## 🚀 Quick Start
+
+### Using Docker (Recommended - 2 Commands!)
+```bash
+# 1. Clone the repository
+git clone <repository-url> && cd /app
+
+# 2. Start everything with Docker
+docker-compose up -d
+
+# Access: http://localhost:3000
+```
+
+### Using Local Development
+```bash
+# 1. Start MongoDB
+sudo systemctl start mongod  # or use MongoDB Atlas
+
+# 2. Start Backend
+cd /app/backend
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+
+# 3. Start Frontend (new terminal)
+cd /app/frontend
+yarn install
+yarn start
+
+# Access: http://localhost:3000
+```
+
 ## 🛠️ Technology Stack
 
 ### Backend
