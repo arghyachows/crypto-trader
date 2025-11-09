@@ -70,14 +70,36 @@ A full-stack cryptocurrency trading platform built with React, FastAPI, and Mong
 ## 🚀 Quick Start
 
 ### Using Docker (Recommended - 2 Commands!)
+
+**Method 1: Using Startup Script (Easiest)**
 ```bash
-# 1. Clone the repository
+# Clone and start
+git clone <repository-url> && cd /app
+./start.sh
+
+# To stop
+./stop.sh
+```
+
+**Method 2: Using Docker Compose**
+```bash
+# Clone the repository
 git clone <repository-url> && cd /app
 
-# 2. Start everything with Docker
+# Start everything with Docker
 docker-compose up -d
 
 # Access: http://localhost:3000
+```
+
+**Method 3: Using Makefile**
+```bash
+# Clone and start
+git clone <repository-url> && cd /app
+make up
+
+# To stop
+make down
 ```
 
 > 📘 **Detailed Docker Documentation**: See [DOCKER.md](./DOCKER.md) for comprehensive Docker setup, troubleshooting, and best practices.
