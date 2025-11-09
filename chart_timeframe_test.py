@@ -5,7 +5,7 @@ import time
 
 def test_chart_timeframes():
     """Test chart endpoint with different timeframes"""
-    base_url = "https://responsive-makeover-8.preview.emergentagent.com"
+    base_url = "https://readme-overhaul-1.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 Testing Chart Timeframe Endpoints")
