@@ -216,16 +216,28 @@ git clone <repository-url>
 cd /app
 ```
 
-### 2. Backend Setup
+#### 2. Install MongoDB
+```bash
+# Ubuntu/Debian
+sudo apt-get install mongodb
 
-#### Install Python Dependencies
+# macOS
+brew install mongodb-community
+
+# Or use MongoDB Atlas (cloud)
+```
+
+#### 3. Backend Setup
+
+**Install Python Dependencies**
 ```bash
 cd /app/backend
 pip install -r requirements.txt
 ```
 
-#### Configure Environment Variables
-Create or update `/app/backend/.env` file:
+**Configure Environment Variables**
+
+Create `/app/backend/.env` file:
 ```env
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=crypto_trading
@@ -233,34 +245,51 @@ JWT_SECRET=your-secret-key-change-in-production
 CORS_ORIGINS=*
 ```
 
-**Note**: The `MONGO_URL` is pre-configured for the container environment. Do not modify unless you know your MongoDB connection details.
+**Start Backend**
+```bash
+cd /app/backend
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+```
 
-### 3. Frontend Setup
+#### 4. Frontend Setup
 
-#### Install Node Dependencies
+**Install Node Dependencies**
 ```bash
 cd /app/frontend
 yarn install
 ```
 
-#### Configure Environment Variables
-The `/app/frontend/.env` file should contain:
+**Configure Environment Variables**
+
+Create `/app/frontend/.env` file:
 ```env
-REACT_APP_BACKEND_URL=<your-backend-url>
+REACT_APP_BACKEND_URL=http://localhost:8001
 ```
 
-**Important**: This URL is pre-configured for production. Do not modify unless necessary.
+**Start Frontend**
+```bash
+cd /app/frontend
+yarn start
+```
 
-## 🚀 Running the Application
+#### 5. Access the Application
 
-The application uses Supervisor to manage both frontend and backend services.
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8001
+- API Documentation: http://localhost:8001/docs
 
-### Start All Services
+---
+
+### 🔧 Alternative: Supervisor Setup
+
+If running in a container environment with Supervisor:
+
+#### Start All Services
 ```bash
 sudo supervisorctl restart all
 ```
 
-### Start Individual Services
+#### Start Individual Services
 ```bash
 # Restart backend only
 sudo supervisorctl restart backend
@@ -269,12 +298,12 @@ sudo supervisorctl restart backend
 sudo supervisorctl restart frontend
 ```
 
-### Check Service Status
+#### Check Service Status
 ```bash
 sudo supervisorctl status
 ```
 
-### View Logs
+#### View Logs
 ```bash
 # Backend logs
 tail -f /var/log/supervisor/backend.*.log
