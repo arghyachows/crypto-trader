@@ -498,41 +498,143 @@ All containers communicate through a Docker bridge network (`crypto-network`).
 
 ## 🐛 Troubleshooting
 
-### Backend Not Starting
+### Docker Issues
+
+#### Containers Not Starting
 ```bash
+# Check container status
+docker-compose ps
+
+# View logs for specific service
+docker-compose logs backend
+docker-compose logs frontend
+docker-compose logs mongodb
+
+# Rebuild containers
+docker-compose up -d --build
+
+# Remove and recreate containers
+docker-compose down
+docker-compose up -d
+```
+
+#### Port Already in Use
+```bash
+# Check what's using the port
+lsof -i :3000  # Frontend
+lsof -i :8001  # Backend
+lsof -i :27017 # MongoDB
+
+# Kill the process or change port in docker-compose.yml
+```
+
+#### Database Connection Issues
+```bash
+# Check if MongoDB container is running
+docker-compose ps mongodb
+
+# View MongoDB logs
+docker-compose logs mongodb
+
+# Restart MongoDB
+docker-compose restart mongodb
+
+# Connect to MongoDB shell
+docker-compose exec mongodb mongosh
+```
+
+#### Volume Permission Issues
+```bash
+# On Linux, if you encounter permission issues:
+sudo chown -R $USER:$USER ./
+
+# Or run with sudo
+sudo docker-compose up -d
+```
+
+#### Cannot Connect to Backend from Frontend
+```bash
+# Verify backend is running
+docker-compose ps backend
+
 # Check backend logs
+docker-compose logs backend
+
+# Test backend directly
+curl http://localhost:8001/api/cryptos
+
+# Verify REACT_APP_BACKEND_URL in docker-compose.yml
+```
+
+#### Hot Reload Not Working
+```bash
+# For frontend, ensure volumes are mounted correctly
+# On Windows/Mac, might need to enable polling:
+# Already configured in docker-compose.yml:
+# CHOKIDAR_USEPOLLING=true
+# WATCHPACK_POLLING=true
+```
+
+### Local Development Issues
+
+#### Backend Not Starting
+```bash
+# Check backend logs (Supervisor)
 tail -n 50 /var/log/supervisor/backend.err.log
 
+# Or check directly if running uvicorn
 # Common issues:
 # - Missing dependencies: pip install -r requirements.txt
 # - MongoDB connection: Verify MONGO_URL in .env
 # - Port already in use: Check if another process is using port 8001
 ```
 
-### Frontend Not Starting
+#### Frontend Not Starting
 ```bash
-# Check frontend logs
+# Check frontend logs (Supervisor)
 tail -n 50 /var/log/supervisor/frontend.err.log
 
 # Common issues:
 # - Missing dependencies: yarn install
 # - Port already in use: Check if another process is using port 3000
+# - Node version: Ensure Node 16+ is installed
 ```
 
-### Database Connection Issues
+#### Database Connection Issues
 ```bash
-# Verify MongoDB is running
+# Verify MongoDB is running (local)
 sudo systemctl status mongod
+
+# For Docker MongoDB
+docker-compose ps mongodb
 
 # Check MongoDB connection string
 cat /app/backend/.env | grep MONGO_URL
 ```
 
-### API Errors
-- Verify backend is running: `sudo supervisorctl status backend`
-- Check CORS configuration in backend/.env
+#### API Errors
+- **Docker**: Verify backend is running: `docker-compose ps backend`
+- **Local**: Verify backend is running: `sudo supervisorctl status backend`
+- Check CORS configuration in backend/.env or docker-compose.yml
 - Ensure all API routes use `/api` prefix
 - Verify authentication token is being sent correctly
+
+### Common Error Messages
+
+#### "Cannot connect to MongoDB"
+- Ensure MongoDB container/service is running
+- Check MONGO_URL environment variable
+- Wait 10-15 seconds after starting MongoDB before starting backend
+
+#### "Port already allocated"
+- Another service is using the port
+- Stop the conflicting service or change port in docker-compose.yml
+
+#### "Module not found" (Frontend)
+- Run `yarn install` or rebuild container: `docker-compose up -d --build frontend`
+
+#### "No module named 'X'" (Backend)
+- Run `pip install -r requirements.txt` or rebuild: `docker-compose up -d --build backend`
 
 ## 🧪 Testing
 
