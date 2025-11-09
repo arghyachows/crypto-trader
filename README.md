@@ -499,7 +499,11 @@ All containers communicate through a Docker bridge network (`crypto-network`).
 ├── docker-compose.prod.yml # Docker Compose for production
 ├── .dockerignore          # Root Docker ignore file
 ├── .env.docker.example    # Example environment variables
+├── Makefile               # Quick commands for Docker operations
+├── start.sh               # Automated startup script
+├── stop.sh                # Automated stop script
 ├── tests/                 # Test files
+├── DOCKER.md              # Comprehensive Docker documentation
 └── README.md             # This file
 ```
 
